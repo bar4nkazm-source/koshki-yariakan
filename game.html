@@ -1,0 +1,1264 @@
+<!DOCTYPE html>
+<html lang="ckb" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>کۆشکی یارییەکان - Create by baran</title>
+    <style>
+        :root {
+            --card-bg: rgba(255, 255, 255, 0.05);
+            --card-border: rgba(255, 255, 255, 0.1);
+            --card-hover: rgba(255, 255, 255, 0.12);
+            --text-main: #f8fafc;
+            --text-sub: #94a3b8;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #090d16, #111827, #1f1035);
+            background-size: 400% 400%;
+            animation: dynamicBackground 15s ease infinite;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+            color: var(--text-main);
+            padding: 20px;
+        }
+
+        @keyframes dynamicBackground {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .container {
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            padding: 35px;
+            border-radius: 32px;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+            width: 780px;
+            max-width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            text-align: center;
+            position: relative;
+        }
+
+        .container::-webkit-scrollbar {
+            width: 6px;
+        }
+        .container::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+        }
+
+        h1 {
+            margin-top: 0;
+            margin-bottom: 8px;
+            font-size: 2.2em;
+            font-weight: 800;
+            background: linear-gradient(135deg, #c084fc, #60a5fa, #34d399);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.5px;
+        }
+
+        .subtitle {
+            color: var(--text-sub);
+            font-size: 0.95em;
+            margin-bottom: 30px;
+        }
+
+        /* بەشی پڕۆفایل */
+        #profile-setup {
+            text-align: center;
+        }
+
+        .avatar-selection {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin: 20px 0;
+        }
+
+        .avatar-option {
+            font-size: 2em;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .avatar-option.selected {
+            border-color: #c084fc;
+            background: rgba(192, 132, 252, 0.2);
+            transform: scale(1.1);
+        }
+
+        /* باڕی سەرەوەی پڕۆفایل لە لۆبی و ژوورەکاندا */
+        .user-profile-bar {
+            display: none;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 10px 20px;
+            border-radius: 16px;
+            margin-bottom: 25px;
+        }
+
+        .current-user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .current-user-avatar {
+            font-size: 1.8em;
+            background: rgba(192, 132, 252, 0.15);
+            border-radius: 50%;
+            width: 45px;
+            height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(192, 132, 252, 0.3);
+        }
+
+        .current-user-name {
+            font-weight: 700;
+            font-size: 1.1em;
+            color: #f8fafc;
+            text-align: right;
+        }
+
+        .btn-edit-profile {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: none;
+            padding: 6px 14px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 0.85em;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+
+        .btn-edit-profile:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .rooms-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .room-card-item {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            padding: 20px 24px;
+            border-radius: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .room-card-item::before {
+            content: '';
+            position: absolute;
+            top: 0; right: 0; width: 4px; height: 100%;
+            background: linear-gradient(to bottom, #60a5fa, #c084fc);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .room-card-item:hover {
+            background: var(--card-hover);
+            transform: translateY(-4px);
+            border-color: rgba(255, 255, 255, 0.25);
+            box-shadow: 0 12px 35px -10px rgba(139, 92, 246, 0.35);
+        }
+
+        .room-card-item:hover::before {
+            opacity: 1;
+        }
+
+        .room-info {
+            text-align: right;
+            padding-right: 5px;
+        }
+
+        .room-info h3 {
+            margin: 0 0 6px 0;
+            font-size: 1.25em;
+            font-weight: 700;
+            color: #f1f5f9;
+        }
+
+        .room-info p {
+            margin: 0;
+            font-size: 0.9em;
+            color: var(--text-sub);
+        }
+
+        .room-enter-btn {
+            background: linear-gradient(135deg, #6366f1, #3b82f6);
+            color: white;
+            border: none;
+            padding: 10px 22px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 0.9em;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.35);
+            white-space: nowrap;
+        }
+
+        .room-enter-btn:hover {
+            transform: scale(1.06);
+            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.55);
+        }
+
+        .room-view {
+            display: none;
+            animation: roomEntry 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .room-view.active {
+            display: block;
+        }
+
+        @keyframes roomEntry {
+            from { opacity: 0; transform: translateY(15px) scale(0.98); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .room-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            padding-bottom: 18px;
+        }
+
+        .room-header h3 {
+            margin: 0;
+            font-size: 1.4em;
+            color: #f8fafc;
+        }
+
+        .btn-exit-room {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
+            border: none;
+            padding: 8px 18px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 0.9em;
+            transition: 0.25s;
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+        }
+
+        .btn-exit-room:hover {
+            transform: translateY(-2px);
+            opacity: 0.95;
+            box-shadow: 0 6px 16px rgba(239, 68, 68, 0.5);
+        }
+
+        .settings-box {
+            background: rgba(0, 0, 0, 0.35);
+            padding: 22px;
+            border-radius: 20px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            text-align: right;
+        }
+
+        .settings-box label {
+            display: block;
+            font-size: 0.9em;
+            font-weight: 700;
+            margin-top: 10px;
+            color: #cbd5e1;
+        }
+
+        input, select {
+            padding: 12px 16px;
+            font-size: 1em;
+            width: 100%;
+            box-sizing: border-box;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            background: rgba(15, 23, 42, 0.6);
+            color: white;
+            border-radius: 12px;
+            margin-top: 6px;
+            margin-bottom: 14px;
+            outline: none;
+            transition: 0.2s;
+        }
+
+        input:focus, select:focus {
+            border-color: #60a5fa;
+            box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.25);
+        }
+
+        .btn-action {
+            padding: 14px 20px;
+            font-size: 1em;
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 700;
+            width: 100%;
+            transition: 0.3s;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+        }
+
+        .btn-action:hover {
+            transform: translateY(-2px);
+            opacity: 0.95;
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.45);
+        }
+
+        .msg {
+            font-size: 1.1em;
+            font-weight: 700;
+            margin-top: 15px;
+            min-height: 28px;
+        }
+
+        .clicker-btn {
+            font-size: 1.2em;
+            padding: 15px;
+            background: linear-gradient(135deg, #6366f1, #4f46e5);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 130px;
+            height: 130px;
+            cursor: pointer;
+            box-shadow: 0 10px 25px rgba(99, 102, 241, 0.4);
+            margin: 20px auto;
+            display: block;
+            transition: 0.15s;
+        }
+
+        .clicker-btn:active {
+            transform: scale(0.90);
+        }
+
+        .wheel-box {
+            font-size: 1.2em;
+            font-weight: 700;
+            background: rgba(0, 0, 0, 0.45);
+            color: #facc15;
+            padding: 22px;
+            border-radius: 18px;
+            margin: 15px 0;
+            border: 1px solid rgba(250, 204, 21, 0.25);
+            box-shadow: inset 0 2px 12px rgba(0,0,0,0.6);
+        }
+
+        .comedy-card {
+            background: rgba(250, 204, 21, 0.1);
+            border: 2px dashed rgba(250, 204, 21, 0.4);
+            padding: 18px;
+            border-radius: 16px;
+            margin-top: 15px;
+            color: #fef08a;
+            font-size: 1.05em;
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        
+        <!-- بەشی دانانی پڕۆفایل لە سەرەتادا -->
+        <div id="profile-setup">
+            <h1>🎮 کۆشکی یارییەکان</h1>
+            <p class="subtitle">دیزاین کراوە بە دەستی <span style="color: #c084fc; font-weight: bold;">Baran</span></p>
+            
+            <div class="settings-box" style="text-align: center;">
+                <h3 style="margin-top: 0; color: #f8fafc;">پڕۆفایلی یاریزان دابمەزرێنە</h3>
+                <label style="text-align: right;">ناوی یاریزان:</label>
+                <input type="text" id="setup-username" value="Baran" placeholder="ناوی خۆت بنووسە...">
+                
+                <label style="text-align: right;">ئاواتاری پڕۆفایل هەڵبژێرە:</label>
+                <div class="avatar-selection">
+                    <div class="avatar-option selected" onclick="selectAvatar('👑', this)">👑</div>
+                    <div class="avatar-option" onclick="selectAvatar('🔥', this)">🔥</div>
+                    <div class="avatar-option" onclick="selectAvatar('🚀', this)">🚀</div>
+                    <div class="avatar-option" onclick="selectAvatar('⚡', this)">⚡</div>
+                    <div class="avatar-option" onclick="selectAvatar('🐱', this)">🐱</div>
+                </div>
+                
+                <button class="btn-action" style="margin-top: 15px;" onclick="saveProfileAndEnter()">چوونە ژووری یارییەکان 🚀</button>
+            </div>
+        </div>
+
+        <!-- باڕی زانیاری پڕۆفایل کە لە سەرەوەی لۆبی و ژوورەکان دەردەکەوێت -->
+        <div id="user-profile-bar" class="user-profile-bar">
+            <button class="btn-edit-profile" onclick="openProfileSetup()">گۆڕینی پڕۆفایل ⚙️</button>
+            <div class="current-user-info">
+                <div class="current-user-name" id="bar-username">Baran</div>
+                <div class="current-user-avatar" id="bar-avatar">👑</div>
+            </div>
+        </div>
+
+        <!-- لیستی سەرەکی ژوورەکان -->
+        <div id="main-lobby" style="display: none;">
+            <div class="rooms-list">
+                <div class="room-card-item" onclick="enterRoom(1)">
+                    <div class="room-info">
+                        <h3>ژووری ١: ژمارەی شاراوە</h3>
+                        <p>ژمارەیەکی دیاریکراو لە نێوان سنوورێکدا بدۆزەوە</p>
+                    </div>
+                    <button class="room-enter-btn">چوونەژوورەوە</button>
+                </div>
+
+                <div class="room-card-item" onclick="enterRoom(2)">
+                    <div class="room-info">
+                        <h3>ژووری ٢: خێرایی کلیک</h3>
+                        <p>بزانە لە چەند چرکەیەکدا چەند کلیک دەکەیت</p>
+                    </div>
+                    <button class="room-enter-btn">چوونەژوورەوە</button>
+                </div>
+
+                <div class="room-card-item" onclick="enterRoom(3)">
+                    <div class="room-info">
+                        <h3>ژووری ٣: سەر یان خوار</h3>
+                        <p>پێشبینی دەرچوونی دراو بکە و بەختت تاقی بکەرەوە</p>
+                    </div>
+                    <button class="room-enter-btn">چوونەژوورەوە</button>
+                </div>
+
+                <div class="room-card-item" onclick="enterRoom(4)">
+                    <div class="room-info">
+                        <h3>ژووری ٤: پێشبڕکێی بیرکاری</h3>
+                        <p>وەڵامدانەوەی خێرا بۆ هاوکێشە بیرکارییەکان</p>
+                    </div>
+                    <button class="room-enter-btn">چوونەژوورەوە</button>
+                </div>
+
+                <div class="room-card-item" onclick="enterRoom(5)">
+                    <div class="room-info">
+                        <h3>ژووری ٥: هەڵبژاردنی ڕەنگ</h3>
+                        <p>تێستکردنی مێشک لە نێوان ناوی ڕەنگ و ڕەنگی نووسینەکە</p>
+                    </div>
+                    <button class="room-enter-btn">چوونەژوورەوە</button>
+                </div>
+
+                <div class="room-card-item" onclick="enterRoom(6)">
+                    <div class="room-info">
+                        <h3>ژووری ٦: بەرد، کاغەز، قیچی</h3>
+                        <p>یارییە کلاسیکییە بەناوبانگەکە بەرامبەر کۆمپیوتەر</p>
+                    </div>
+                    <button class="room-enter-btn">چوونەژوورەوە</button>
+                </div>
+
+                <div class="room-card-item" onclick="enterRoom(7)">
+                    <div class="room-info">
+                        <h3>ژووری ٧: لەبەرکردنی ژمارە</h3>
+                        <p>ژمارەیەک بۆ چەند چرکەیەک دەبینیت و پاشان بیدۆزەوە</p>
+                    </div>
+                    <button class="room-enter-btn">چوونەژوورەوە</button>
+                </div>
+
+                <div class="room-card-item" onclick="enterRoom(8)">
+                    <div class="room-info">
+                        <h3>ژووری ٨: ناسینەوەی ئاڵا قورسەکان</h3>
+                        <p>ئێستا ئاڵای وڵاتانی جیهان بناسەوە و خاڵ کۆبکەرەوە</p>
+                    </div>
+                    <button class="room-enter-btn">چوونەژوورەوە</button>
+                </div>
+
+                <div class="room-card-item" onclick="enterRoom(9)">
+                    <div class="room-info">
+                        <h3>ژووری ٩: چەرخی سزای کۆمیدی</h3>
+                        <p>چەرخەکە بسوڕێنە بۆ بینینی سەیرترین سزا و پێكەنین</p>
+                    </div>
+                    <button class="room-enter-btn">چوونەژوورەوە</button>
+                </div>
+
+                <div class="room-card-item" onclick="enterRoom(10)" style="border-color: rgba(192, 132, 252, 0.4);">
+                    <div class="room-info">
+                        <h3>ژووری ١٠: فێڵی ناوی تۆرەبەخشی (٢ تا ٨ کەس)</h3>
+                        <p>تایبەت بە ٢ بۆ ٨ یاریزان بۆ دەرکردنی بلیتی سزای پێکەنین</p>
+                    </div>
+                    <button class="room-enter-btn" style="background: linear-gradient(135deg, #c084fc, #6366f1);">چوونەژوورەوە</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ژووری ١: ژمارەی شاراوە -->
+        <div id="room-1" class="room-view">
+            <div class="room-header">
+                <h3>ژووری ١: ژمارەی شاراوە</h3>
+                <button class="btn-exit-room" onclick="exitToLobby()">دەرچوون 🚪</button>
+            </div>
+            <div id="g1-settings" class="settings-box">
+                <label>سنووری ژمارە:</label>
+                <select id="g1-max-range">
+                    <option value="50" style="color:#000;">١ بۆ ٥٠</option>
+                    <option value="100" selected style="color:#000;">١ بۆ ١٠٠</option>
+                    <option value="500" style="color:#000;">١ بۆ ٥٠٠</option>
+                </select>
+                <button class="btn-action" onclick="g1StartGame()">دەستپێکردن</button>
+            </div>
+            <div id="g1-play" style="display:none;">
+                <p id="g1-inst">ژمارەیەک بدۆزەوە</p>
+                <input type="number" id="g1-input" placeholder="ژمارە بنووسە">
+                <button class="btn-action" onclick="g1Check()">تاقیکردنەوە</button>
+                <p class="msg" id="g1-msg"></p>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 15px;">
+                    <p style="font-size: 0.85em; color: var(--text-sub); margin: 0;" id="g1-stats">هەوڵەکان: ٠ | کات: ٠ چرکە</p>
+                    <button style="padding: 6px 14px; background: #ef4444; color: white; border: none; border-radius: 10px; cursor: pointer; font-size: 0.85em; font-weight: 700;" onclick="g1OpenSettings()">ڕێکخستن</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ژووری ٢: خێرایی کلیک -->
+        <div id="room-2" class="room-view">
+            <div class="room-header">
+                <h3>ژووری ٢: خێرایی کلیک</h3>
+                <button class="btn-exit-room" onclick="exitToLobby()">دەرچوون 🚪</button>
+            </div>
+            <div id="g2-settings" class="settings-box">
+                <label>کاتی یاری (بە چرکە):</label>
+                <input type="number" id="g2-time-val" value="10" min="3" max="30">
+                <button class="btn-action" onclick="g2StartGame()">دەستپێکردن</button>
+            </div>
+            <div id="g2-play" style="display:none;">
+                <button class="clicker-btn" onclick="g2Click()">کلیک بکە</button>
+                <p class="msg" id="g2-msg">دوگمەکە دابگرە</p>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 15px;">
+                    <p style="font-size: 1.05em; font-weight: 700; margin: 0;" id="g2-score">ژمارەی کلیک: ٠</p>
+                    <button style="padding: 6px 14px; background: #ef4444; color: white; border: none; border-radius: 10px; cursor: pointer; font-size: 0.85em; font-weight: 700;" onclick="g2OpenSettings()">ڕێکخستن</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ژووری ٣: سەر یان خوار -->
+        <div id="room-3" class="room-view">
+            <div class="room-header">
+                <h3>ژووری ٣: سەر یان خوار</h3>
+                <button class="btn-exit-room" onclick="exitToLobby()">دەرچوون 🚪</button>
+            </div>
+            <div id="g3-settings" class="settings-box">
+                <button class="btn-action" onclick="g3StartGame()">دەستپێکردن</button>
+            </div>
+            <div id="g3-play" style="display:none;">
+                <div style="display: flex; gap: 12px; justify-content: center; margin-bottom: 15px;">
+                    <button class="btn-action" onclick="g3Play('سەر')">سەر (Heads)</button>
+                    <button class="btn-action" onclick="g3Play('خوار')">خوار (Tails)</button>
+                </div>
+                <p class="msg" id="g3-msg"></p>
+                <p style="font-size: 0.9em; color: var(--text-sub); margin-top: 15px;" id="g3-stats">سەرکەوتن: ٠ | دۆران: ٠</p>
+            </div>
+        </div>
+
+        <!-- ژووری ٤: پێشبڕکێی بیرکاری -->
+        <div id="room-4" class="room-view">
+            <div class="room-header">
+                <h3>ژووری ٤: پێشبڕکێی بیرکاری</h3>
+                <button class="btn-exit-room" onclick="exitToLobby()">دەرچوون 🚪</button>
+            </div>
+            <div id="g4-settings" class="settings-box">
+                <label>جۆری کارکردن:</label>
+                <select id="g4-difficulty">
+                    <option value="easy" style="color:#000;">ئاسان (+ و -)</option>
+                    <option value="hard" selected style="color:#000;">قورس (+، -، *)</option>
+                </select>
+                <button class="btn-action" onclick="g4StartGame()">دەستپێکردن</button>
+            </div>
+            <div id="g4-play" style="display:none;">
+                <p id="g4-q" style="font-size: 1.4em; font-weight: 800; color: #facc15;"></p>
+                <input type="number" id="g4-input" placeholder="وەڵام بنووسە">
+                <button class="btn-action" onclick="g4Check()">ناردنی وەڵام</button>
+                <p class="msg" id="g4-msg"></p>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 15px;">
+                    <p style="font-size: 0.9em; color: var(--text-sub); margin: 0;" id="g4-score">خاڵەکان: ٠</p>
+                    <button style="padding: 6px 14px; background: #ef4444; color: white; border: none; border-radius: 10px; cursor: pointer; font-size: 0.85em; font-weight: 700;" onclick="g4OpenSettings()">ڕێکخستن</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ژووری ٥: هەڵبژاردنی ڕەنگ -->
+        <div id="room-5" class="room-view">
+            <div class="room-header">
+                <h3>ژووری ٥: هەڵبژاردنی ڕەنگ</h3>
+                <button class="btn-exit-room" onclick="exitToLobby()">دەرچوون 🚪</button>
+            </div>
+            <div id="g5-settings" class="settings-box">
+                <button class="btn-action" onclick="g5StartGame()">دەستپێکردن</button>
+            </div>
+            <div id="g5-play" style="display:none;">
+                <p style="color: var(--text-sub);">کام ڕەنگە دەخوێنرێتەوە؟</p>
+                <h2 id="g5-word" style="margin: 15px 0; font-size: 2.2em; font-weight: 800;"></h2>
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 20px;">
+                    <button style="padding: 12px; background: #ef4444; color: white; border: none; border-radius: 12px; font-weight: 700; cursor: pointer; box-shadow: 0 4px 10px rgba(239, 68, 68, 0.3);" onclick="g5Guess('سور')">سور</button>
+                    <button style="padding: 12px; background: #3b82f6; color: white; border: none; border-radius: 12px; font-weight: 700; cursor: pointer; box-shadow: 0 4px 10px rgba(59, 130, 246, 0.3);" onclick="g5Guess('شین')">شین</button>
+                    <button style="padding: 12px; background: #10b981; color: white; border: none; border-radius: 12px; font-weight: 700; cursor: pointer; box-shadow: 0 4px 10px rgba(16, 185, 129, 0.3);" onclick="g5Guess('سەوز')">سەوز</button>
+                    <button style="padding: 12px; background: #facc15; color: black; border: none; border-radius: 12px; font-weight: 700; cursor: pointer; box-shadow: 0 4px 10px rgba(250, 204, 21, 0.3);" onclick="g5Guess('زەرد')">زەرد</button>
+                </div>
+                <p class="msg" id="g5-msg"></p>
+            </div>
+        </div>
+
+        <!-- ژووری ٦: بەرد، کاغەز، قیچی -->
+        <div id="room-6" class="room-view">
+            <div class="room-header">
+                <h3>ژووری ٦: بەرد، کاغەز، قیچی</h3>
+                <button class="btn-exit-room" onclick="exitToLobby()">دەرچوون 🚪</button>
+            </div>
+            <div id="g6-settings" class="settings-box">
+                <button class="btn-action" onclick="g6StartGame()">دەستپێکردن</button>
+            </div>
+            <div id="g6-play" style="display:none;">
+                <div style="display: flex; gap: 10px; justify-content: center; margin-bottom: 15px;">
+                    <button class="btn-action" onclick="g6Play('بەرد')">بەرد ✊</button>
+                    <button class="btn-action" onclick="g6Play('کاغەز')">کاغەز ✋</button>
+                    <button class="btn-action" onclick="g6Play('قیچی')">قیچی ✌️</button>
+                </div>
+                <p class="msg" id="g6-msg"></p>
+                <p style="font-size: 0.9em; color: var(--text-sub); margin-top: 15px;" id="g6-stats">بردنەوە: ٠ | دۆران: ٠</p>
+            </div>
+        </div>
+
+        <!-- ژووری ٧: لەبەرکردنی ژمارە -->
+        <div id="room-7" class="room-view">
+            <div class="room-header">
+                <h3>ژووری ٧: لەبەرکردنی ژمارە</h3>
+                <button class="btn-exit-room" onclick="exitToLobby()">دەرچوون 🚪</button>
+            </div>
+            <div id="g7-settings" class="settings-box">
+                <label>کاتی پیشاندان (چرکە):</label>
+                <input type="number" id="g7-display-time" value="3" min="1" max="10">
+                <button class="btn-action" onclick="g7StartGame()">دەستپێکردن</button>
+            </div>
+            <div id="g7-play" style="display:none;">
+                <p id="g7-inst" style="color: var(--text-sub);">ئامادەبە...</p>
+                <h2 id="g7-number" style="letter-spacing: 8px; color: #facc15; font-size: 2.2em; margin: 15px 0;">-</h2>
+                <input type="number" id="g7-input" placeholder="ژمارە بنووسە" style="display:none;">
+                <button class="btn-action" id="g7-btn" onclick="g7Start()">دەستپێکردن</button>
+                <p class="msg" id="g7-msg"></p>
+                <button style="padding: 6px 14px; background: #ef4444; color: white; border: none; border-radius: 10px; cursor: pointer; font-size: 0.85em; font-weight: 700; margin-top: 15px;" onclick="g7OpenSettings()">ڕێکخستن</button>
+            </div>
+        </div>
+
+        <!-- ژووری ٨: ئاڵا قورسەکان -->
+        <div id="room-8" class="room-view">
+            <div class="room-header">
+                <h3>ژووری ٨: ئاڵا قورسەکان</h3>
+                <button class="btn-exit-room" onclick="exitToLobby()">دەرچوون 🚪</button>
+            </div>
+            <div id="g8-settings" class="settings-box">
+                <label>ئاستی قورسی:</label>
+                <select id="set-difficulty">
+                    <option value="easy" style="color:#000;">ئاسان</option>
+                    <option value="hard" selected style="color:#000;">قورس</option>
+                </select>
+                <label>ژیان (دلەکان):</label>
+                <input type="number" id="set-lives" value="3" min="1" max="10">
+                <label>کات بۆ هەر پرسیارێک:</label>
+                <input type="number" id="set-timer" value="5" min="2" max="30">
+                <button class="btn-action" style="margin-top: 10px;" onclick="g8StartGame()">دەستپێکردن</button>
+            </div>
+            <div id="g8-play" style="display:none;">
+                <div style="display: flex; justify-content: space-between; font-weight: 700; margin-bottom: 12px;">
+                    <span id="g8-lives" style="color: #ef4444;">ژیان: ❤️ ❤️ ❤️</span>
+                    <span id="g8-timer" style="color: #facc15;">کات: ٥ چرکە</span>
+                </div>
+                <div>
+                    <img id="flag-img" src="" alt="Flag" style="width: 160px; height: 100px; object-fit: cover; border-radius: 12px; border: 2px solid rgba(255,255,255,0.15); margin-bottom: 15px; box-shadow: 0 8px 20px rgba(0,0,0,0.4);">
+                </div>
+                <div id="flag-options" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;"></div>
+                <p class="msg" id="g8-msg"></p>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 15px;">
+                    <p style="font-size: 0.9em; color: var(--text-sub); margin: 0;" id="g8-score">خاڵەکان: ٠</p>
+                    <button style="padding: 6px 14px; background: #ef4444; color: white; border: none; border-radius: 10px; cursor: pointer; font-size: 0.85em; font-weight: 700;" onclick="g8OpenSettings()">ڕێکخستن</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ژووری ٩: چەرخی سزای کۆمەڵ -->
+        <div id="room-9" class="room-view">
+            <div class="room-header">
+                <h3>ژووری ٩: چەرخی سزای کۆمیدی</h3>
+                <button class="btn-exit-room" onclick="exitToLobby()">دەرچوون 🚪</button>
+            </div>
+            <div class="settings-box">
+                <p style="font-size: 0.95em; margin-bottom: 15px; color: var(--text-sub);">ئەم چەرخە بکە بۆ دەرکردنی سەیرترین و کۆمیدیترین سزا!</p>
+                <button class="btn-action" onclick="spinComedyWheel()">سوڕاندنی چەرخی سزا 🎡</button>
+            </div>
+            <div id="comedy-result-box" style="display:none;">
+                <div class="wheel-box" id="comedy-wheel-title">سزای دەرچوو:</div>
+                <div class="comedy-card" id="comedy-wheel-text">سزا لێرە دەردەکەوێت...</div>
+            </div>
+        </div>
+
+        <!-- ژووری ١٠: فێڵی ناوی تۆرەبەخشی (٢ تا ٨ کەس) -->
+        <div id="room-10" class="room-view">
+            <div class="room-header">
+                <h3>ژووری ١٠: فێڵی ناوی تۆرەبەخشی (٢ تا ٨ کەس)</h3>
+                <button class="btn-exit-room" onclick="exitToLobby()">دەرچوون 🚪</button>
+            </div>
+            <div id="g10-settings" class="settings-box">
+                <label>ژمارەی یاریزانەکان هەڵبژێرە (٢ تا ٨):</label>
+                <select id="g10-num-players" onchange="g10UpdatePlayerInputs()" style="color:#000;">
+                    <option value="2">٢ یاریزان</option>
+                    <option value="3">٣ یاریزان</option>
+                    <option value="4" selected>٤ یاریزان</option>
+                    <option value="5">٥ یاریزان</option>
+                    <option value="6">٦ یاریزان</option>
+                    <option value="7">٧ یاریزان</option>
+                    <option value="8">٨ یاریزان</option>
+                </select>
+                <label>ناوی یاریزانەکان بنووسە:</label>
+                <div id="g10-players-inputs" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 15px;">
+                </div>
+                <button class="btn-action" style="margin-top: 10px;" onclick="g10StartGame()">دەستپێکردنی چەرخ و بلیت 🎭</button>
+            </div>
+            <div id="g10-play" style="display:none;">
+                <p id="g10-turn-info" style="font-size: 1.15em; font-weight: 700; color: #38bdf8;"></p>
+                <div id="g10-wheel-display" class="wheel-box">چەرخ خەریکە دەسووڕێتەوە...</div>
+                <button class="btn-action" id="g10-spin-btn" onclick="g10SpinWheel()">سوڕاندنی چەرخی بلیت 🎫</button>
+                <p class="msg" id="g10-msg" style="font-size: 0.95em; background: rgba(0,0,0,0.3); padding: 14px; border-radius: 12px; border: 1px dashed rgba(255,255,255,0.15); margin-top: 15px; color: #fff;"></p>
+                <button style="padding: 6px 14px; background: #ef4444; color: white; border: none; border-radius: 10px; cursor: pointer; font-size: 0.85em; font-weight: 700; margin-top: 15px;" onclick="g10OpenSettings()">گۆڕینی یاریزانەکان ⚙️</button>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        let userProfile = {
+            name: "Baran",
+            avatar: "👑"
+        };
+
+        function selectAvatar(avatarChar, element) {
+            document.querySelectorAll('.avatar-option').forEach(el => el.classList.remove('selected'));
+            element.classList.add('selected');
+            userProfile.avatar = avatarChar;
+        }
+
+        function saveProfileAndEnter() {
+            let nameInput = document.getElementById('setup-username').value.trim();
+            if(nameInput !== "") {
+                userProfile.name = nameInput;
+            }
+            
+            document.getElementById('bar-username').innerText = userProfile.name;
+            document.getElementById('bar-avatar').innerText = userProfile.avatar;
+
+            document.getElementById('profile-setup').style.display = 'none';
+            document.getElementById('user-profile-bar').style.display = 'flex';
+            document.getElementById('main-lobby').style.display = 'block';
+        }
+
+        function openProfileSetup() {
+            exitToLobby();
+            document.getElementById('profile-setup').style.display = 'block';
+            document.getElementById('user-profile-bar').style.display = 'none';
+            document.getElementById('main-lobby').style.display = 'none';
+        }
+
+        function enterRoom(roomNum) {
+            document.getElementById('main-lobby').style.display = 'none';
+            for(let i=1; i<=10; i++) {
+                let r = document.getElementById('room-'+i);
+                if(r) r.className = i === roomNum ? 'room-view active' : 'room-view';
+            }
+            if(roomNum === 10) {
+                g10UpdatePlayerInputs();
+            }
+        }
+
+        function exitToLobby() {
+            for(let i=1; i<=10; i++) {
+                let r = document.getElementById('room-'+i);
+                if(r) r.className = 'room-view';
+                clearInterval(g8TimerInterval);
+                clearInterval(g2Int);
+                clearInterval(g1Int);
+            }
+            document.getElementById('main-lobby').style.display = 'block';
+        }
+
+        /* --- ژووری ١ --- */
+        let maxR = 100, secNum = 0, att = 0, tm = 0, g1Int = null, g1St = false;
+        function g1OpenSettings() {
+            clearInterval(g1Int);
+            document.getElementById('g1-settings').style.display = 'block';
+            document.getElementById('g1-play').style.display = 'none';
+        }
+        function g1StartGame() {
+            maxR = parseInt(document.getElementById('g1-max-range').value);
+            document.getElementById('g1-inst').innerText = `ژمارەیەک لە نێوان ١ بۆ ${maxR} بدۆزەوە`;
+            document.getElementById('g1-settings').style.display = 'none';
+            document.getElementById('g1-play').style.display = 'block';
+            secNum = Math.floor(Math.random()*maxR)+1;
+            att = 0; tm = 0; g1St = false; clearInterval(g1Int);
+            document.getElementById('g1-stats').innerText = `هەوڵەکان: ٠ | کات: ٠ چرکە`;
+            document.getElementById('g1-msg').innerText = "";
+            document.getElementById('g1-input').value = "";
+        }
+        function g1Check() {
+            let val = document.getElementById('g1-input').value;
+            let m = document.getElementById('g1-msg');
+            if(val==="") return;
+            if(!g1St) {
+                g1St = true;
+                g1Int = setInterval(()=>{ tm++; document.getElementById('g1-stats').innerText = `هەوڵەکان: ${att} | کات: ${tm} چرکە`; }, 1000);
+            }
+            att++;
+            if(val == secNum) {
+                clearInterval(g1Int);
+                m.style.color = "#10b981";
+                m.innerText = `🎉 پیرۆزە ${userProfile.name}! لە ${att} هەوڵدا دۆزیتەوە!`;
+            } else if(val > secNum) {
+                m.style.color = "#facc15";
+                m.innerText = "ژمارەکەت بەرزە! 🔽";
+            } else {
+                m.style.color = "#38bdf8";
+                m.innerText = "ژمارەکەت نزمە! 🔼";
+            }
+        }
+
+        /* --- ژووری ٢ --- */
+        let clk = 0, cTimer = 10, maxCTime = 10, g2Int = null, cPlay = false;
+        function g2OpenSettings() {
+            clearInterval(g2Int);
+            cPlay = false;
+            document.getElementById('g2-settings').style.display = 'block';
+            document.getElementById('g2-play').style.display = 'none';
+        }
+        function g2StartGame() {
+            maxCTime = parseInt(document.getElementById('g2-time-val').value) || 10;
+            document.getElementById('g2-settings').style.display = 'none';
+            document.getElementById('g2-play').style.display = 'block';
+            clk = 0; cPlay = false;
+            document.getElementById('g2-msg').innerText = "دوگمەکە دابگرە بۆ دەستپێکردن";
+            document.getElementById('g2-score').innerText = `ژمارەی کلیک: ٠`;
+        }
+        function g2Click() {
+            if(!cPlay) {
+                cPlay = true; clk = 0; cTimer = maxCTime;
+                document.getElementById('g2-msg').innerText = `کات ماوە: ${cTimer} چرکە`;
+                g2Int = setInterval(()=>{
+                    cTimer--;
+                    document.getElementById('g2-msg').innerText = `کات ماوە: ${cTimer} چرکە`;
+                    if(cTimer<=0) {
+                        clearInterval(g2Int);
+                        cPlay = false;
+                        document.getElementById('g2-msg').innerText = `⏰ تەواو! ئەنجام: ${clk} کلیک`;
+                    }
+                }, 1000);
+            }
+            if(cPlay) {
+                clk++;
+                document.getElementById('g2-score').innerText = `ژمارەی کلیک: ${clk}`;
+            }
+        }
+
+        /* --- ژووری ٣ --- */
+        let wins = 0, losses = 0;
+        function g3StartGame() {
+            document.getElementById('g3-settings').style.display = 'none';
+            document.getElementById('g3-play').style.display = 'block';
+            wins = 0; losses = 0;
+            document.getElementById('g3-msg').innerText = "";
+            document.getElementById('g3-stats').innerText = `سەرکەوتن: ٠ | دۆران: ٠`;
+        }
+        function g3Play(guess) {
+            let res = Math.random() < 0.5 ? 'سەر' : 'خوار';
+            let m = document.getElementById('g3-msg');
+            if(guess === res) {
+                m.style.color = "#10b981";
+                m.innerText = `پیرۆزە! دراوەکە دەرچوو: ${res}`;
+                wins++;
+            } else {
+                m.style.color = "#ef4444";
+                m.innerText = `هەڵە بوو! دراوەکە دەرچوو: ${res}`;
+                losses++;
+            }
+            document.getElementById('g3-stats').innerText = `سەرکەوتن: ${wins} | دۆران: ${losses}`;
+        }
+
+        /* --- ژووری ٤ --- */
+        let n1, n2, op, ans, score4 = 0;
+        function g4OpenSettings() {
+            document.getElementById('g4-settings').style.display = 'block';
+            document.getElementById('g4-play').style.display = 'none';
+        }
+        function g4StartGame() {
+            document.getElementById('g4-settings').style.display = 'none';
+            document.getElementById('g4-play').style.display = 'block';
+            score4 = 0;
+            document.getElementById('g4-score').innerText = `خاڵەکان: ٠`;
+            g4Next();
+        }
+        function g4Next() {
+            n1 = Math.floor(Math.random()*20)+1;
+            n2 = Math.floor(Math.random()*20)+1;
+            let diff = document.getElementById('g4-difficulty').value;
+            let ops = (diff === 'easy') ? ['+', '-'] : ['+', '-', '*'];
+            op = ops[Math.floor(Math.random()*ops.length)];
+            if(op==='+') ans = n1 + n2;
+            if(op==='-') ans = n1 - n2;
+            if(op==='*') ans = n1 * n2;
+            document.getElementById('g4-q').innerText = `${n1} ${op} ${n2} = ؟`;
+            document.getElementById('g4-input').value = "";
+        }
+        function g4Check() {
+            let userAns = document.getElementById('g4-input').value;
+            let m = document.getElementById('g4-msg');
+            if(userAns == ans) {
+                m.style.color = "#10b981";
+                m.innerText = "وەڵامەکەت ڕاستە! 🌟";
+                score4++;
+                document.getElementById('g4-score').innerText = `خاڵەکان: ${score4}`;
+                g4Next();
+            } else {
+                m.style.color = "#ef4444";
+                m.innerText = "هەڵە بوو!";
+            }
+        }
+
+        /* --- ژووری ٥ --- */
+        let colors = ['سور', 'شین', 'سەوز', 'زەرد'];
+        let colorCodes = {'سور':'#ef4444', 'شین':'#3b82f6', 'سەوز':'#10b981', 'زەرد':'#facc15'};
+        let curCol = '';
+        function g5StartGame() {
+            document.getElementById('g5-settings').style.display = 'none';
+            document.getElementById('g5-play').style.display = 'block';
+            document.getElementById('g5-msg').innerText = "";
+            g5Next();
+        }
+        function g5Next() {
+            curCol = colors[Math.floor(Math.random()*colors.length)];
+            let randomTextCol = colors[Math.floor(Math.random()*colors.length)];
+            let el = document.getElementById('g5-word');
+            el.innerText = randomTextCol;
+            el.style.color = colorCodes[curCol];
+        }
+        function g5Guess(g) {
+            let m = document.getElementById('g5-msg');
+            if(g === curCol) {
+                m.style.color = "#10b981";
+                m.innerText = "پیرۆزە! ڕاستە.";
+            } else {
+                m.style.color = "#ef4444";
+                m.innerText = "هەڵە بوو!";
+            }
+            g5Next();
+        }
+
+        /* --- ژووری ٦ --- */
+        let w6=0, l6=0;
+        function g6StartGame() {
+            document.getElementById('g6-settings').style.display = 'none';
+            document.getElementById('g6-play').style.display = 'block';
+            w6 = 0; l6 = 0;
+            document.getElementById('g6-msg').innerText = "";
+            document.getElementById('g6-stats').innerText = `بردنەوە: ٠ | دۆران: ٠`;
+        }
+        function g6Play(userChoice) {
+            let choices = ['بەرد', 'کاغەز', 'قیچی'];
+            let compChoice = choices[Math.floor(Math.random()*choices.length)];
+            let m = document.getElementById('g6-msg');
+            if(userChoice === compChoice) {
+                m.style.color = "#facc15";
+                m.innerText = `ەیەکسان بوو! کۆمپیوتەر: ${compChoice}`;
+            } else if((userChoice==='بەرد'&&compChoice==='قیچی') || (userChoice==='کاغەز'&&compChoice==='بەرد') || (userChoice==='قیچی'&&compChoice==='کاغەز')) {
+                m.style.color = "#10b981";
+                m.innerText = `بردەوەتەوە! کۆمپیوتەر: ${compChoice}`;
+                w6++;
+            } else {
+                m.style.color = "#ef4444";
+                m.innerText = `دۆڕاندی! کۆمپیوتەر: ${compChoice}`;
+                l6++;
+            }
+            document.getElementById('g6-stats').innerText = `بردنەوە: ${w6} | دۆران: ${l6}`;
+        }
+
+        /* --- ژووری ٧ --- */
+        let memorizedNum = "", g7DispTime = 3;
+        function g7OpenSettings() {
+            document.getElementById('g7-settings').style.display = 'block';
+            document.getElementById('g7-play').style.display = 'none';
+        }
+        function g7StartGame() {
+            g7DispTime = parseInt(document.getElementById('g7-display-time').value) || 3;
+            document.getElementById('g7-settings').style.display = 'none';
+            document.getElementById('g7-play').style.display = 'block';
+            document.getElementById('g7-msg').innerText = "";
+            document.getElementById('g7-number').innerText = "-";
+            document.getElementById('g7-input').style.display = "none";
+            let btn = document.getElementById('g7-btn');
+            btn.style.display = "block";
+            btn.innerText = "دەستپێکردن";
+            btn.setAttribute("onclick", "g7Start()");
+        }
+        function g7Start() {
+            let m = document.getElementById('g7-msg');
+            let numEl = document.getElementById('g7-number');
+            let inputEl = document.getElementById('g7-input');
+            let btn = document.getElementById('g7-btn');
+            
+            m.innerText = "";
+            inputEl.style.display = "none";
+            memorizedNum = Math.floor(Math.random()*9000 + 1000);
+            numEl.innerText = memorizedNum;
+            btn.style.display = "none";
+
+            setTimeout(() => {
+                numEl.innerText = "****";
+                inputEl.style.display = "block";
+                inputEl.value = "";
+                btn.style.display = "block";
+                btn.innerText = "پشکنین";
+                btn.setAttribute("onclick", "g7Check()");
+            }, g7DispTime * 1000);
+        }
+        function g7Check() {
+            let val = document.getElementById('g7-input').value;
+            let m = document.getElementById('g7-msg');
+            if(val == memorizedNum) {
+                m.style.color = "#10b981";
+                m.innerText = "🎉 نایابە!";
+            } else {
+                m.style.color = "#ef4444";
+                m.innerText = `هەڵە بوو! ژمارەکە: ${memorizedNum}`;
+            }
+            let btn = document.getElementById('g7-btn');
+            btn.innerText = "دەستپێکردنەوە";
+            btn.setAttribute("onclick", "g7Start()");
+        }
+
+        /* --- ژووری ٨ --- */
+        const hardFlags = [
+            { code: "bh", name: "بەحرەین" }, { code: "bt", name: "بوتان" },
+            { code: "dj", name: "جیبوتی" }, { code: "dm", name: "دۆمینیکا" },
+            { code: "er", name: "ئێریتریا" }, { code: "fj", name: "فیجی" },
+            { code: "gd", name: "گرینادا" }, { code: "gy", name: "گویانا" },
+            { code: "ki", name: "کیریباتی" }, { code: "ls", name: "لیسۆتۆ" },
+            { code: "li", name: "لیختنشتاین" }, { code: "mv", name: "ماڵدیڤ" },
+            { code: "nr", name: "ناوورو" }, { code: "pw", name: "پاڵاو" },
+            { code: "qa", name: "قەتەر" }, { code: "rw", name: "ڕواندا" },
+            { code: "sm", name: "سان مارینۆ" }, { code: "sc", name: "سیشێل" },
+            { code: "to", name: "تۆنگا" }, { code: "tv", name: "توفالو" }
+        ];
+        const easyFlags = [
+            { code: "us", name: "ئەمریکا" }, { code: "gb", name: "بەریتانیا" },
+            { code: "fr", name: "فەرەنسا" }, { code: "de", name: "ئەڵمانیا" },
+            { code: "jp", name: "جۆپان" }, { code: "it", name: "ئیتاڵیا" },
+            { code: "ca", name: "کەنەدا" }, { code: "br", name: "بەڕازیل" }
+        ];
+
+        let score8 = 0, lives8 = 3, maxTime8 = 5, timeLeft8 = 5, g8TimerInterval = null, currentHardFlag = null, activeFlagSet = hardFlags;
+
+        function g8OpenSettings() {
+            clearInterval(g8TimerInterval);
+            document.getElementById('g8-settings').style.display = "block";
+            document.getElementById('g8-play').style.display = "none";
+        }
+        function g8StartGame() {
+            let diffMode = document.getElementById('set-difficulty').value;
+            activeFlagSet = (diffMode === 'easy') ? easyFlags : hardFlags;
+            lives8 = parseInt(document.getElementById('set-lives').value) || 3;
+            maxTime8 = parseInt(document.getElementById('set-timer').value) || 5;
+
+            document.getElementById('g8-settings').style.display = "none";
+            document.getElementById('g8-play').style.display = "block";
+            score8 = 0;
+            document.getElementById('g8-score').innerText = `خاڵەکان: ٠`;
+            g8NextRound();
+        }
+        function g8NextRound() {
+            clearInterval(g8TimerInterval);
+            if (lives8 <= 0) {
+                document.getElementById('g8-msg').style.color = "#ef4444";
+                document.getElementById('g8-msg').innerText = "❌ تەواو بوو! (Game Over)";
+                document.getElementById('flag-options').innerHTML = `<button class="btn-action" style="grid-column: span 2;" onclick="g8OpenSettings()">ڕێکخستن</button>`;
+                return;
+            }
+
+            document.getElementById('g8-lives').innerText = `ژیان: ` + (lives8 <= 5 ? "❤️ ".repeat(lives8) : `❤️ x ${lives8}`);
+            document.getElementById('g8-msg').innerText = "";
+            
+            currentHardFlag = activeFlagSet[Math.floor(Math.random() * activeFlagSet.length)];
+            document.getElementById('flag-img').src = `https://flagcdn.com/w320/${currentHardFlag.code}.png`;
+
+            let options = [currentHardFlag.name];
+            while(options.length < 4 && options.length < activeFlagSet.length) {
+                let rand = activeFlagSet[Math.floor(Math.random() * activeFlagSet.length)].name;
+                if(!options.includes(rand)) options.push(rand);
+            }
+            options.sort(() => Math.random() - 0.5);
+
+            let container = document.getElementById('flag-options');
+            container.innerHTML = "";
+            options.forEach(opt => {
+                let btn = document.createElement('button');
+                btn.style.cssText = "background: rgba(255,255,255,0.06); color:white; border:1px solid rgba(255,255,255,0.12); padding:12px; border-radius:12px; cursor:pointer; font-weight:700; transition:0.2s;";
+                btn.onmouseover = () => btn.style.background = "rgba(255,255,255,0.12)";
+                btn.onmouseout = () => btn.style.background = "rgba(255,255,255,0.06)";
+                btn.innerText = opt;
+                btn.onclick = () => g8Check(opt);
+                container.appendChild(btn);
+            });
+
+            timeLeft8 = maxTime8;
+            document.getElementById('g8-timer').innerText = `کات: ${timeLeft8} چرکە`;
+            g8TimerInterval = setInterval(() => {
+                timeLeft8--;
+                document.getElementById('g8-timer').innerText = `کات: ${timeLeft8} چرکە`;
+                if(timeLeft8 <= 0) {
+                    clearInterval(g8TimerInterval);
+                    lives8--;
+                    document.getElementById('g8-msg').style.color = "#ef4444";
+                    document.getElementById('g8-msg').innerText = `⏰ کات تەواو بوو! وەڵام: ${currentHardFlag.name}`;
+                    setTimeout(g8NextRound, 1500);
+                }
+            }, 1000);
+        }
+        function g8Check(selected) {
+            clearInterval(g8TimerInterval);
+            let m = document.getElementById('g8-msg');
+            if(selected === currentHardFlag.name) {
+                m.style.color = "#10b981";
+                m.innerText = "🎉 نایابە!";
+                score8 += 10;
+                document.getElementById('g8-score').innerText = `خاڵەکان: ${score8}`;
+                setTimeout(g8NextRound, 1000);
+            } else {
+                lives8--;
+                m.style.color = "#ef4444";
+                m.innerText = `❌ هەڵە بوو! وەڵام: ${currentHardFlag.name}`;
+                setTimeout(g8NextRound, 1500);
+            }
+        }
+
+        /* --- ژووری ٩ --- */
+        const comedyPunishments = [
+            "سزا: دەبێت بۆ ماوەی ٢ خولەک وەک کەناڵی تەلەفزیۆنی بێدەنگ ڕوو لە دیوار ڕاوەستی!",
+            "سزا: ناوی خۆت بە پێچەوانەوە بە هاوار بڵێ!",
+            "سزا: دەبێت لاسایی پشیلەیەکی تووڕە بکەیتەوە.",
+            "سزا: بۆ ماوەی ٣ خولەک لە کۆتایی هەر قسەیەکدا بڵێ 'میاو'!",
+            "سزا: نامەیەک بۆ دوا کەس بنێریت لە تەلەفۆنەکەت و بنووسیت 'پاتاتە شیرینەکەم'.",
+            "سزا: بە دەنگی زۆر منداڵانە ناوەکانی دەوروبەرت بخوێنەوە.",
+            "سزا: پێڵاوەکانی کەسی تەنیشتت بۆ ماوەی خولەکێک ڕێک بخە!"
+        ];
+        function spinComedyWheel() {
+            let resBox = document.getElementById('comedy-result-box');
+            let textEl = document.getElementById('comedy-wheel-text');
+            resBox.style.display = "block";
+            textEl.innerText = "چەرخ دەسووڕێتەوە... 🤪";
+            setTimeout(() => {
+                let randomPunish = comedyPunishments[Math.floor(Math.random() * comedyPunishments.length)];
+                textEl.innerText = randomPunish;
+            }, 800);
+        }
+
+        /* --- ژووری ١٠ (٢ تا ٨ یاریزان) --- */
+        let players = [];
+        let currentPlayerIdx = 0;
+        const comedyTickets = [
+            "🎫 بلیتی پێکەنین: پێبکەنە بە بێدەنگی و ددانەکانت نیشانی هەمووان بدە تاوەکو یەکەم کەس پێدەکەنی!",
+            "🎫 بلیتی فێڵ: بە درۆ پێیان بڵێ 'من براوەی ١٠ هەزار دۆلار بووم'.",
+            "🎫 بلیتی گۆرانی: گۆرانییەکی منداڵانە بە دەنگی زۆر گەورە بخوێنە.",
+            "🎫 بلیتی پەیوەندی: تەلەفۆن بۆ کەسێک بکە و بە جددی بڵێ 'ئۆتۆمبیلەکەم فڕێدا بۆ ناو دەریا'.",
+            "🎫 بلیتی ئاماژە: بۆ ماوەی ٢ خولەک تەنها بە جووڵەی دەست قسە بکە."
+        ];
+
+        function g10UpdatePlayerInputs() {
+            let num = parseInt(document.getElementById('g10-num-players').value) || 4;
+            let container = document.getElementById('g10-players-inputs');
+            container.innerHTML = "";
+            for(let i=1; i<=num; i++) {
+                let input = document.createElement('input');
+                input.type = "text";
+                input.id = `p${i}-name`;
+                input.value = `یاریزان ${i}`;
+                input.style.margin = "0";
+                container.appendChild(input);
+            }
+        }
+
+        function g10OpenSettings() {
+            document.getElementById('g10-settings').style.display = "block";
+            document.getElementById('g10-play').style.display = "none";
+        }
+
+        function g10StartGame() {
+            let num = parseInt(document.getElementById('g10-num-players').value) || 4;
+            players = [];
+            for(let i=1; i<=num; i++) {
+                let nameVal = document.getElementById(`p${i}-name`).value || `یاریزان ${i}`;
+                players.push(nameVal);
+            }
+            document.getElementById('g10-settings').style.display = "none";
+            document.getElementById('g10-play').style.display = "block";
+            currentPlayerIdx = Math.floor(Math.random() * players.length);
+            updateG10Turn();
+            document.getElementById('g10-msg').innerText = "چەرخەکە بسوڕێنە بۆ دەرهێنانی بلیتی کۆمیدی! 🎭";
+        }
+
+        function updateG10Turn() {
+            document.getElementById('g10-turn-info').innerText = `نۆرەی: ${players[currentPlayerIdx]} 🎯`;
+            document.getElementById('g10-wheel-display').innerText = "ئامادەیە بۆ وەرگرتنی بلیت...";
+        }
+
+        function g10SpinWheel() {
+            let spinBtn = document.getElementById('g10-spin-btn');
+            spinBtn.disabled = true;
+            let wheelBox = document.getElementById('g10-wheel-display');
+            let m = document.getElementById('g10-msg');
+            m.innerText = "چەرخ دەسووڕێتەوە...";
+
+            let counter = 0;
+            let interval = setInterval(() => {
+                wheelBox.innerText = "چەرخ دەسووڕێتەوە... 🌀";
+                counter++;
+                if(counter > 8) {
+                    clearInterval(interval);
+                    let selectedTicket = comedyTickets[Math.floor(Math.random() * comedyTickets.length)];
+                    wheelBox.innerText = `🎫 بلیتی ${players[currentPlayerIdx]}`;
+                    m.style.color = "#fef08a";
+                    m.innerText = selectedTicket;
+                    spinBtn.disabled = false;
+                    
+                    currentPlayerIdx = (currentPlayerIdx + 1) % players.length;
+                    setTimeout(() => {
+                        document.getElementById('g10-turn-info').innerText = `نۆرەی داهاتوو: ${players[currentPlayerIdx]} 🎯`;
+                    }, 4000);
+                }
+            }, 100);
+        }
+    </script>
+</body>
+</html>
